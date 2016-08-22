@@ -5,11 +5,11 @@
 3. Just Add Location.swift File in to your project .
 4. Just Below Code in to your Controller 
 
-location = Location()
-location.responseBlock = { location in
+# location = Location()
+# location.responseBlock = { location in
     print(location.latitude)
     print(location.longitude)
 }
-location.errorBlock = { error in
+# location.errorBlock = { error in
     print(error.description)
 }
