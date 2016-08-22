@@ -9,17 +9,30 @@
 import UIKit
 
 class ViewController: UIViewController {
+   var location: Location!
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-    }
+   override func viewDidLoad() {
+      super.viewDidLoad()
+      // get location coordinates
+      updateLocation()
+   }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
+   func updateLocation() {
+      location = Location()
+      location.responseBlock = { location in
+         print(location.latitude)
+         print(location.longitude)
+      }
+      location.errorBlock = { error in
+         print(error.description)
+      }
+   }
 
+   override func didReceiveMemoryWarning() {
+      super.didReceiveMemoryWarning()
+      // Dispose of any resources that can be recreated.
+
+   }
 
 }
 

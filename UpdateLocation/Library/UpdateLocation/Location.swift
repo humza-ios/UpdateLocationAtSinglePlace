@@ -10,42 +10,46 @@ import Foundation
 import CoreLocation
 
 class Location: NSObject, CLLocationManagerDelegate {
-    
-    //location manager Object
-    private var locationManager: CLLocationManager?
-    
-    // init 
-    
-    override init() {
-        super.init()
-        locationManager = CLLocationManager()
-        if(CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse){
-            if CLLocationManager.locationServicesEnabled() {
-                locationManager!.delegate = self
-                locationManager!.desiredAccuracy = kCLLocationAccuracyBest
-                locationManager!.startMonitoringSignificantLocationChanges()
-                locationManager!.startUpdatingLocation()
-            }
-        }
-    }
-    
-    // kill Location Manger Object Automatically  Called
-    deinit {
-        locationManager!.stopUpdatingLocation()
-        locationManager?.delegate = nil
-        locationManager = nil
-    }
-    
-    
-    
-    @objc func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        //let locValue:CLLocationCoordinate2D = manager.location!.coordinate
-//        currentLat = "\(locValue.latitude)"
-//        currentLong = "\(locValue.longitude)"
-        locationManager!.stopUpdatingLocation()
-    }
-    
-    @objc func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
-        //helper.showAlert("Location Error", message: error.localizedDescription)
-    }
+
+   // MARK: -location manager Object
+   private var locationManager: CLLocationManager?
+   // MARK: -responce Block
+   var responseBlock: ((coordinates: CLLocationCoordinate2D) -> Void)? = nil
+   var errorBlock: ((NSError) -> Void)? = nil
+
+   // MARK: - init  Function
+   override init() {
+      super.init()
+      locationManager = CLLocationManager()
+      if (CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse) {
+         if CLLocationManager.locationServicesEnabled() {
+            locationManager!.delegate = self
+            locationManager!.desiredAccuracy = kCLLocationAccuracyBest
+            locationManager!.startMonitoringSignificantLocationChanges()
+            locationManager!.startUpdatingLocation()
+         }
+      } else {
+         self.locationManager!.requestWhenInUseAuthorization()
+         locationManager!.desiredAccuracy = kCLLocationAccuracyBest
+      }
+   }
+   // MARK: - kill Location Manger Object Automatically  Called
+   deinit {
+      locationManager!.stopUpdatingLocation()
+      locationManager?.delegate = nil
+      locationManager = nil
+   }
+   // MARK: - Delegate Function of Location Manager
+   func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+      let coordinates: CLLocationCoordinate2D = manager.location!.coordinate
+      locationManager!.stopUpdatingLocation()
+      locationManager?.delegate = nil
+      locationManager = nil
+      responseBlock!(coordinates: coordinates)
+   }
+
+   func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
+      errorBlock!(error)
+   }
+
 }
