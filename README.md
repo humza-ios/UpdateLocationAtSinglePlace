@@ -1,4 +1,4 @@
-# UpdateLocationAtSinglePlace
+# Update Location At Single Place
 
 1. Add CoreLocation.framework 
 2. import CoreLocation in your model 
