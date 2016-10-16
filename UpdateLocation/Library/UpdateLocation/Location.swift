@@ -12,16 +12,16 @@ import CoreLocation
 class Location: NSObject, CLLocationManagerDelegate {
 
    // MARK: -location manager Object
-   private var locationManager: CLLocationManager?
+   fileprivate var locationManager: CLLocationManager?
    // MARK: -responce Block
-   var responseBlock: ((coordinates: CLLocationCoordinate2D) -> Void)? = nil
+   var responseBlock: ((_ coordinates: CLLocationCoordinate2D) -> Void)? = nil
    var errorBlock: ((NSError) -> Void)? = nil
 
    // MARK: - init  Function
    override init() {
       super.init()
       locationManager = CLLocationManager()
-      if (CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse) {
+      if (CLLocationManager.authorizationStatus() == .authorizedWhenInUse) {
          if CLLocationManager.locationServicesEnabled() {
             locationManager!.delegate = self
             locationManager!.desiredAccuracy = kCLLocationAccuracyBest
@@ -40,16 +40,16 @@ class Location: NSObject, CLLocationManagerDelegate {
       locationManager = nil
    }
    // MARK: - Delegate Function of Location Manager
-   func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+   func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
       let coordinates: CLLocationCoordinate2D = manager.location!.coordinate
       locationManager!.stopUpdatingLocation()
       locationManager?.delegate = nil
       locationManager = nil
-      responseBlock!(coordinates: coordinates)
+      responseBlock!(coordinates)
    }
 
-   func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
-      errorBlock!(error)
+   func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+      errorBlock!(error as NSError)
    }
 
 }
